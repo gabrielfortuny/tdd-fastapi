@@ -15,3 +15,4 @@ ENV PYTHONUNBUFFERED 1
 ENV UV_NO_DEV=1
 COPY . .
 RUN uv sync --locked
+ENV PATH="/usr/src/app/.venv/bin:$PATH"

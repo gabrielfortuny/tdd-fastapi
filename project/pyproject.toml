@@ -4,8 +4,11 @@ version = "0.1.0"
 description = ""
 requires-python = ">=3.14"
 dependencies = [
+    "aerich[toml]>=0.8.1",
+    "asyncpg>=0.31.0",
     "fastapi[standard]>=0.135.1",
     "pydantic-settings>=2.13.1",
+    "tortoise-orm>=1.1.6",
     "uvicorn>=0.42.0",
 ]
 
@@ -13,3 +16,8 @@ dependencies = [
 dev = [
     "ruff>=0.15.6",
 ]
+
+[tool.aerich]
+tortoise_orm = "app.db.TORTOISE_ORM"
+location = "./migrations"
+src_folder = "./."
