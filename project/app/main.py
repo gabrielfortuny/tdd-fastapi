@@ -1,3 +1,4 @@
+import logging
 import os
 
 from fastapi import Depends, FastAPI
@@ -6,6 +7,8 @@ from tortoise import connections
 from tortoise.contrib.fastapi import register_tortoise
 
 from app.config import Settings, get_settings
+
+log = logging.getLogger(__name__)
 
 app = FastAPI()
 
@@ -24,7 +27,8 @@ async def health(settings: Settings = Depends(get_settings)):
         db = connections.get("default")
         await db.execute_query("SELECT 1")
         db_status = "ok"
-    except Exception:
+    except Exception as e:
+        log.error("DB healthcheck failed: %s", e)
         db_status = "unavailable"
 
     response = {
