@@ -1,44 +1,20 @@
 import logging
-import os
 
-from fastapi import Depends, FastAPI
-from fastapi.responses import JSONResponse
-from tortoise import connections
-from tortoise.contrib.fastapi import register_tortoise
+from fastapi import FastAPI
 
-from app.config import Settings, get_settings
+from app.api import health
+from app.db import init_db
 
-log = logging.getLogger(__name__)
-
-app = FastAPI()
-
-register_tortoise(
-    app,
-    db_url=os.environ.get("DATABASE_URL"),
-    modules={"models": ["app.models.tortoise"]},
-    generate_schemas=False,
-    add_exception_handlers=True,
-)
+log = logging.getLogger("uvicorn")
 
 
-@app.get("/health")
-async def health(settings: Settings = Depends(get_settings)):
-    try:
-        db = connections.get("default")
-        await db.execute_query("SELECT 1")
-        db_status = "ok"
-    except Exception as e:
-        log.error("DB healthcheck failed: %s", e)
-        db_status = "unavailable"
+def create_application() -> FastAPI:
+    application = FastAPI()
+    application.include_router(health.router)
 
-    response = {
-        "status": "ok" if db_status == "ok" else "degraded",
-        "environment": settings.environment,
-        "testing": settings.testing,
-        "db": db_status,
-    }
+    return application
 
-    if db_status != "ok":
-        return JSONResponse(content=response, status_code=503)
 
-    return response
+app = create_application()
+
+init_db(app)
