@@ -1,6 +1,9 @@
 # pull official base image
 FROM python:3.14-slim-bookworm
 
+# install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+
 # install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 

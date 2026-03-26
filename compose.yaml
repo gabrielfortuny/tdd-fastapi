@@ -11,6 +11,11 @@ services:
       - TESTING=0
       - DATABASE_URL=postgres://postgres:postgres@web-db:5432/web_dev
       - DATABASE_TEST_URL=postgres://postgres:postgres@web-db:5432/web_test
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     depends_on:
       web-db:
         condition: service_healthy
@@ -25,7 +30,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 2s
       timeout: 5s
       retries: 5
