@@ -9,13 +9,14 @@ dependencies = [
     "fastapi[standard]>=0.135.1",
     "httpx>=0.28.1",
     "pydantic-settings>=2.13.1",
-    "pytest>=9.0.2",
     "tortoise-orm>=1.1.6",
     "uvicorn>=0.42.0",
 ]
 
 [dependency-groups]
 dev = [
+    "pytest>=9.0.2",
+    "pytest-cov>=7.1.0",
     "ruff>=0.15.6",
 ]
 
